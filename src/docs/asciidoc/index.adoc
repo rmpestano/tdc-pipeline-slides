@@ -1,0 +1,313 @@
+= JavaEE Pipeline como código usando Jenkins, Docker e Sonar
+Rafael Pestano
+2017-11-09
+:revnumber: {project-version}
+:example-caption!:
+ifndef::imagesdir[:imagesdir: images]
+ifndef::sourcedir[:sourcedir: ../java]
+:navigation:
+:menu:
+:status:
+:title-slide-background-image: title.png
+:title-slide-transition: zoom
+:title-slide-transition-speed: fast
+:icons: font
+ 
+== Rafael Pestano
+
+Desenvolvedor Java na PROCERGS
+
+
+* http://twitter.com/realpestano/[@realpestano^] icon:twitter[]
+* http://github.com/rmpestano/[@rmpestano^] icon:github[]
+* http://rpestano.wordpress.com[Blog^] icon:wordpress[]
+
+image::rsjug_logo.png[height=150, width=150]
+
+
+++++
+<aside class="notes">
+This is my note.
+
+- It can contain markdown
+- like this list
+
+</aside>
+++++
+
+
+== Agenda
+
+* Continuous Delivery
+* Pipeline
+* Pipeline
+* Pipeline
+* Pipeline
+* Pipeline
+* Pipeline
+* Referências
+
+
+== Continuous delivery
+
+____
+"A software strategy that enables organizations to deliver new features to users as fast and efficiently as possible"
+____
+
+[%step]
+* É estar pronto para entregar em produção a qualquer momento!
+
+
+=== Por que?
+
+[,Jez Humble]
+____
+"... If it hurts, do it more frequently, and bring the pain forward."
+____
+
+
+=== Objetivos
+
+* Reduzir o risco de uma entrega
+* Criar um processo bem definido de release
+* Tornar o processo de entrega menos doloroso e com menos surpresas
+
+[.stretch]
+image::fear_change.jpg[]
+
+=== Deploy para produção
+
+[.stretch]
+image::deploy-to-production.gif[]
+
+
+=== Princípios
+
+++++
+<ul>
+    <li class='fragment roll-in'><p>Cada commit gera um release candidate</p>
+        <blockquote>&ldquo;The longer you delay, the worse(exponentially) the problem becomes&ldquo; [Neal Ford - Director at ThoughtWorks]</blockquote>
+    </li>
+    <li class='fragment roll-in'>
+        <p>Automatize tudo que pode ser automatizado</p>
+    </li>
+    <li class='fragment roll-in'>
+        <p>Testes automatizados são essenciais</p>
+    </li>
+    <li class='fragment roll-in'>
+        <p>Feedback rápido e contínuo </p>
+        <aside class="notes">
+            tanto a nivel de build quanto a nível de cliente(ele vai homologar o release candidate)
+        </aside>
+    </li>
+</ul>
+
+++++
+
+=== Princípios
+
+++++
+<ul>
+    <li class='fragment roll-in'>
+        <p>Melhoria contínua</p>
+        <aside class="notes">
+            A partir de um processo bem definido eu posso melhorar
+        </aside>
+    </li>
+    <li class='fragment roll-in'>
+        <p>Colaboração, todo mundo é responsável pela release</p>
+        <aside class="notes">
+            DEV, QA, OPs etc...
+        </aside>
+    </li>
+    <li class='fragment roll-in'>
+        Progresso mensurável
+        <ol>
+            <li>
+                <p>Quantos builds falharam?</p>
+            </li>
+            <li>
+                <p>Em qual etapa falhou?</p>
+                <aside class="notes">
+                    compilação, testes, deploy, QA etc...
+                </aside>
+            </li>
+            <li>
+                <p>Quanto tempo para colocar uma versão em produção? </p>
+            </li>
+        </ol>
+    </li>
+</ul>
+
+++++
+
+=== Consequências
+
+* Reduces the severity and frequency of release failures
+* Improves the Mean Time to Recovery (MTTR)
+
+[.stretch]
+image::mttr.jpg[]
+
+== Deployment pipeline
+
+____
+"... A pipeline is a set of stages to bring funcionality from developers to end users"
+____
+
+[.stretch]
+image::continuous-deployment-pipeline.png[]
+
+
+== Jenkins [underline]#1.x# pipeline
+
+[.stretch]
+image::pipeline-old.png[]
+
+== Jenkins [underline]#2.x# pipeline
+
+[.stretch]
+image::declarative-announce.png[]
+
+== Jenkins 2.x pipeline
+
+[%step]
+* Versionamento
+* Reutilização (libraries)
+* Tudo em um único lugar (Jenkinsfile)
+* Sobrevive a restarts
+
+== Jenkins 2.x pipeline [underline]#como código#
+
+[source,groovy]
+----
+pipeline {
+    agent any
+
+    stages {
+
+        stage('checkout') {
+
+            steps {
+                git 'https://github.com/rmpestano/tdc-pipeline.git'
+            }
+        }
+
+        stage('build') {
+
+            steps {
+                sh 'mvn clean package'
+            }
+
+        }
+    }
+
+}
+----
+
+== Jenkins 2.x pipeline [underline]#no código#
+
+[.stretch]
+image::pipeline-in-code.png[]
+
+Demo `v0.1`
+
+== Sonar
+
+Demo `v0.2`
+
+[.stretch]
+image::sonar.jpg[]
+
+== Quality gate
+
+Demo `v0.3`
+
+[.stretch]
+image::you-shall-not-pass.gif[]
+
+== Post actions
+
+Demo `v0.4`
+
+[source,groovy]
+----
+pipeline {
+    agent any
+
+    //stages
+
+    post {
+      always {
+            sendNotification(currentBuild.result)
+      }
+
+      success {
+           echo 'Build was a success'
+      }
+
+      failure {
+           echo 'Build failure'
+      }
+
+      changed {
+          echo 'Build status changed.'
+      }
+   }
+}//end pipeline
+
+def sendNotification(buildStatus) {
+
+  buildStatus =  buildStatus ?: 'SUCCESSFUL'
+
+  def color = buildStatus == 'SUCCESSFUL' ? 'good' : 'danger'
+
+  def message = "${currentBuild.fullDisplayName} *${buildStatus}*. (<${env.BUILD_URL}|Open>)"
+
+
+  slackSend (channel: '#builds', color: color, message: message)
+
+  }
+
+----
+
+== Pipeline libraries
+
+Permite o reaproveitamento de trechos de um pipeline
+
+
+== TDC Pipeline final
+
+[.stretch]
+image::tdc-pipeline.png[]
+
+
+=== Video
+
+[.stretch]
+video::xUlTyzsMPes[youtube]
+
+
+[background-color="#01303a"]
+== Perguntas?
+
+[.stretch]
+image::questions.jpg[]
+
+
+
+== Referências
+
+* https://github.com/rmpestano/tdc-pipeline/
+* https://jenkins.io/doc/book/pipeline/syntax/
+* https://jenkins.io/blog/2017/02/15/declarative-notifications/
+* https://jenkins.io/doc/book/pipeline/shared-libraries/
+* https://jenkins.io/blog/2017/02/07/declarative-maven-project/
+* https://virtualjug.com/pipeline-as-code-building-continuous-delivery-pipelines-with-jenkins-2/
+
+Slides: https://rmpestano.github.io/talks/slides/javaee-pipeline/
+
+[%notitle]
+== Thanks
+
+image::thanks.jpg[]
