@@ -143,8 +143,8 @@ image::deploy-to-production.gif[]
 
 === Consequências
 
-* Reduces the severity and frequency of release failures
-* Improves the Mean Time to Recovery (MTTR)
+* Menor severidade e frequência de falhas relacionadas a um release
+* Menor tempo de recuperação à falhas (MTTR)
 
 [.stretch]
 image::mttr.jpg[]
@@ -210,7 +210,7 @@ pipeline {
 [.stretch]
 image::pipeline-in-code.png[]
 
-Demo `v0.1`
+Demo `v0.1` (http://github.com/rmpestano/tdc-pipeline)
 
 == Sonar
 
@@ -225,6 +225,12 @@ Demo `v0.3`
 
 [.stretch]
 image::you-shall-not-pass.gif[]
+
+++++
+<aside class="notes">
+FALHAR PRIMEIRO, coverage 10
+</aside>
+++++
 
 == Post actions
 
@@ -270,6 +276,13 @@ def sendNotification(buildStatus) {
   }
 
 ----
+
+
+++++
+<aside class="notes">
+lastChanges format:'SIDE'
+</aside>
+++++
 
 == Pipeline libraries
 
