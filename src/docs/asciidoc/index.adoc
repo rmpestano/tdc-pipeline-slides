@@ -208,20 +208,90 @@ pipeline {
 == Jenkins 2.x pipeline [underline]#no código#
 
 [.stretch]
-image::pipeline-in-code.png[]
+image::pipeline-on-code.png[]
 
-Demo `v0.1` (http://github.com/rmpestano/tdc-pipeline)
+Demo `v0.1` (https://github.com/rmpestano/tdc-pipeline/releases/tag/0.1)
+
+=== Jenkins 2.x pipeline [underline]#no código#
+
+[source,groovy]
+----
+pipeline {
+    agent any
+
+    stages {
+
+     stage('build') {
+
+        steps {
+            sh 'mvn clean package'
+        }
+    }
+
+    stage('Deploy') {
+        steps {
+            sh 'docker stop tdc-pipeline || true && docker rm tdc-pipeline || true'
+            sh 'docker build -t tdc-pipeline .'
+            sh 'docker run -d --name tdc-pipeline -p 8181:8080 -v ~/db:/opt/jboss/db tdc-pipeline'
+        }
+    }
+  }
+}
+
+----
+
 
 == Sonar
 
-Demo `v0.2`
+Demo `v0.2` (https://github.com/rmpestano/tdc-pipeline/releases/tag/0.2)
 
 [.stretch]
 image::sonar.jpg[]
 
+=== Sonar
+
+[source,groovy]
+----
+pipeline {
+    agent any
+
+    stages {
+
+         stage('build') {
+
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+         }
+
+       stage('unit-tests') {
+             steps {
+                  sh 'mvn test -Pcoverage'
+                }
+           }
+
+       stage("SonarQube analysis") {
+            steps {
+              withSonarQubeEnv('sonar') {
+                   sh 'mvn sonar:sonar'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker stop tdc-pipeline || true && docker rm tdc-pipeline || true'
+                sh 'docker build -t tdc-pipeline .'
+                sh 'docker run -d --name tdc-pipeline -p 8181:8080 -v ~/db:/opt/jboss/db tdc-pipeline'
+            }
+        }
+  }
+}
+----
+
 == Quality gate
 
-Demo `v0.3`
+Demo `v0.3` (https://github.com/rmpestano/tdc-pipeline/releases/tag/0.3)
 
 [.stretch]
 image::you-shall-not-pass.gif[]
@@ -232,9 +302,67 @@ FALHAR PRIMEIRO, coverage 10
 </aside>
 ++++
 
+=== Quality gate
+
+[source,groovy]
+----
+pipeline {
+    agent any
+
+    stages {
+
+     stage('build') {
+
+        steps {
+            sh 'mvn clean package -DskipTests'
+        }
+    }
+
+   stage('unit-tests') {
+          steps {
+               sh 'mvn test -Pcoverage'
+            }
+        }
+
+   stage("SonarQube analysis") {
+        steps {
+          withSonarQubeEnv('sonar') {
+               sh 'mvn sonar:sonar'
+            }
+        }
+     }
+
+   stage("Quality Gate") {
+        steps {
+            sh 'sleep 12s'
+            timeout(time: 5, unit: 'MINUTES') {
+                script {
+                    def result = waitForQualityGate()
+                    if (result.status != 'OK') {
+                        error "Pipeline aborted due to quality gate failure: ${result.status}"
+                        } else {
+                            echo "Quality gate passed with result: ${result.status}"
+                        }
+                    }
+                }
+
+            }
+   }
+
+    stage('Deploy') {
+        steps {
+            sh 'docker stop tdc-pipeline || true && docker rm tdc-pipeline || true'
+            sh 'docker build -t tdc-pipeline .'
+            sh 'docker run -d --name tdc-pipeline -p 8181:8080 -v ~/db:/opt/jboss/db tdc-pipeline'
+        }
+    }
+  }
+}
+----
+
 == Post actions
 
-Demo `v0.4`
+Demo `v0.4` (https://github.com/rmpestano/tdc-pipeline/releases/tag/0.4)
 
 [source,groovy]
 ----
@@ -287,6 +415,8 @@ lastChanges format:'SIDE'
 == Pipeline libraries
 
 Permite o reaproveitamento de trechos de um pipeline
+
+https://github.com/rmpestano/tdc-pipeline#shared-library
 
 
 == TDC Pipeline final
