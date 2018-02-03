@@ -143,7 +143,7 @@ image::declarative-announce.png[]
 
 [%step]
 * Described in a very easy and powerful DSL
-* Versioning
+* Lives on source code (versioning)
 * Reuse with `shared libraries`
 * Everything in one place (Jenkinsfile)
 * Recovery from restarts
