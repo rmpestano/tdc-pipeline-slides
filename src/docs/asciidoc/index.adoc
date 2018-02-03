@@ -419,7 +419,7 @@ image::questions.jpg[]
 * https://jenkins.io/blog/2017/02/07/declarative-maven-project/
 * https://virtualjug.com/pipeline-as-code-building-continuous-delivery-pipelines-with-jenkins-2/
 
-Slides: https://rmpestano.github.io/talks/slides/javaee-pipeline-en/
+Slides: https://rmpestano.github.io/talks/slides/javaee-pipeline/index-en.html
 
 [%notitle]
 == Thanks
