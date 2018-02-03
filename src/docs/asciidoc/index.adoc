@@ -1,4 +1,4 @@
-= JavaEE Pipeline como código usando Jenkins, Docker e Sonar
+= JavaEE Pipeline as code using Jenkins, Docker and Sonar
 Rafael Pestano
 2017-11-09
 :revnumber: {project-version}
@@ -15,7 +15,7 @@ ifndef::sourcedir[:sourcedir: ../java]
  
 == Rafael Pestano
 
-Desenvolvedor Java na PROCERGS
+Software Engineer at PROCERGS
 
 
 * http://twitter.com/realpestano/[@realpestano^] icon:twitter[]
@@ -25,28 +25,6 @@ Desenvolvedor Java na PROCERGS
 image::rsjug_logo.png[height=150, width=150]
 
 
-++++
-<aside class="notes">
-This is my note.
-
-- It can contain markdown
-- like this list
-
-</aside>
-++++
-
-
-== Agenda
-
-* Continuous Delivery
-* Pipeline
-* Pipeline
-* Pipeline
-* Pipeline
-* Pipeline
-* Pipeline
-* Referências
-
 
 == Continuous delivery
 
@@ -55,7 +33,7 @@ ____
 ____
 
 [%step]
-* É estar pronto para entregar em produção a qualquer momento!
+* `Be ready` to delivery in production at any moment!
 
 
 === Por que?
@@ -66,74 +44,66 @@ ____
 ____
 
 
-=== Objetivos
+=== Goals
 
-* Reduzir o risco de uma entrega
-* Criar um processo bem definido de release
-* Tornar o processo de entrega menos doloroso e com menos surpresas
+* Reduce the risk of delivering
+* Create a well known delivery process/cycle
+* Make release process painless and without surprises
+* Be ready to go to production at anytime
 
 [.stretch]
 image::fear_change.jpg[]
 
-=== Deploy para produção
+=== Deploy to production
 
 [.stretch]
 image::deploy-to-production.gif[]
 
 
-=== Princípios
+=== Principles
 
 ++++
 <ul>
-    <li class='fragment roll-in'><p>Cada commit gera um release candidate</p>
+    <li class='fragment roll-in'><p>Each commit/push creates a release canditate</p>
         <blockquote>&ldquo;The longer you delay, the worse(exponentially) the problem becomes&ldquo; [Neal Ford - Director at ThoughtWorks]</blockquote>
     </li>
     <li class='fragment roll-in'>
-        <p>Automatize tudo que pode ser automatizado</p>
+        <p>Heavily based on automation</p>
     </li>
     <li class='fragment roll-in'>
-        <p>Testes automatizados são essenciais</p>
+        <p>Automated tests are primordial</p>
     </li>
     <li class='fragment roll-in'>
-        <p>Feedback rápido e contínuo </p>
-        <aside class="notes">
-            tanto a nivel de build quanto a nível de cliente(ele vai homologar o release candidate)
-        </aside>
+        <p>Continuous and fast feedback (from end user as well from your release process)</p>
     </li>
 </ul>
 
 ++++
 
-=== Princípios
+=== Principles
 
 ++++
 <ul>
     <li class='fragment roll-in'>
-        <p>Melhoria contínua</p>
+        <p>Continuous improvement</p>
         <aside class="notes">
-            A partir de um processo bem definido eu posso melhorar
+            Having a standard process we can enhance it.
         </aside>
     </li>
     <li class='fragment roll-in'>
-        <p>Colaboração, todo mundo é responsável pela release</p>
-        <aside class="notes">
-            DEV, QA, OPs etc...
-        </aside>
+        <p>Colaboration, everyone is responsible for the release process ( DEV, QA, OPs...)</p>
     </li>
     <li class='fragment roll-in'>
-        Progresso mensurável
+        Measurable progress
         <ol>
             <li>
-                <p>Quantos builds falharam?</p>
+                <p>How many builds have failed?</p>
             </li>
             <li>
-                <p>Em qual etapa falhou?</p>
-                <aside class="notes">
-                    compilação, testes, deploy, QA etc...
-                </aside>
+                <p>In which stage it failed?</p>
             </li>
             <li>
-                <p>Quanto tempo para colocar uma versão em produção? </p>
+                <p>How long it takes to go to production? </p>
             </li>
         </ol>
     </li>
@@ -141,10 +111,10 @@ image::deploy-to-production.gif[]
 
 ++++
 
-=== Consequências
+=== Consequences
 
-* Menor severidade e frequência de falhas relacionadas a um release
-* Menor tempo de recuperação à falhas (MTTR)
+* Less severity and frequency of failures related to a release
+* Reduced time to recovery from failures (MTTR)
 
 [.stretch]
 image::mttr.jpg[]
@@ -172,12 +142,12 @@ image::declarative-announce.png[]
 == Jenkins 2.x pipeline
 
 [%step]
-* Versionamento
-* Reutilização (libraries)
-* Tudo em um único lugar (Jenkinsfile)
-* Sobrevive a restarts
+* Versioning
+* Reuse with `shared libraries`
+* Everything in one place (Jenkinsfile)
+* Recovery from restarts
 
-== Jenkins 2.x pipeline [underline]#como código#
+== Jenkins 2.x pipeline [underline]#as code#
 
 [source,groovy]
 ----
@@ -205,14 +175,14 @@ pipeline {
 }
 ----
 
-== Jenkins 2.x pipeline [underline]#no código#
+== Jenkins 2.x pipeline [underline]#on code#
 
 [.stretch]
 image::pipeline-on-code.png[]
 
 Demo `v0.1` (https://github.com/rmpestano/tdc-pipeline/releases/tag/0.1)
 
-=== Jenkins 2.x pipeline [underline]#no código#
+=== Jenkins 2.x pipeline [underline]#on code#
 
 [source,groovy]
 ----
@@ -289,7 +259,7 @@ pipeline {
 }
 ----
 
-== Quality gate
+== Quality Gate
 
 Demo `v0.3` (https://github.com/rmpestano/tdc-pipeline/releases/tag/0.3)
 
@@ -302,7 +272,7 @@ FALHAR PRIMEIRO, coverage 10
 </aside>
 ++++
 
-=== Quality gate
+=== Quality Gate
 
 [source,groovy]
 ----
@@ -412,9 +382,9 @@ lastChanges format:'SIDE'
 </aside>
 ++++
 
-== Pipeline libraries
+== Pipeline shared libraries
 
-Permite o reaproveitamento de trechos de um pipeline
+Enables reuse of pipeline sections (even entire stages) among projects
 
 https://github.com/rmpestano/tdc-pipeline#shared-library
 
@@ -439,7 +409,7 @@ image::questions.jpg[]
 
 
 
-== Referências
+== References
 
 * https://github.com/rmpestano/tdc-pipeline/
 * https://jenkins.io/doc/book/pipeline/syntax/
@@ -448,7 +418,7 @@ image::questions.jpg[]
 * https://jenkins.io/blog/2017/02/07/declarative-maven-project/
 * https://virtualjug.com/pipeline-as-code-building-continuous-delivery-pipelines-with-jenkins-2/
 
-Slides: https://rmpestano.github.io/talks/slides/javaee-pipeline/
+Slides: https://rmpestano.github.io/talks/slides/javaee-pipeline-en/
 
 [%notitle]
 == Thanks
